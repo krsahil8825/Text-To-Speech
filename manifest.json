@@ -1,19 +1,17 @@
 {
     "manifest_version": 3,
     "name": "Text to Speech",
-    "version": "01.00.00",
+    "version": "1.0.0",
     "description": "A text-to-speech extension supporting multiple languages with male and female voices.",
     "icons": {
-        "128": "icon.png"
+      "128": "icon.png"
     },
     "action": {
-        "default_popup": "popup.html"
+      "default_popup": "popup.html"
     },
-    "permissions": [
-        "tts",
-        "storage"
-    ],
+    "permissions": ["tts", "storage"],
     "background": {
-        "service_worker": "background.js"
+      "service_worker": "background.js"
     }
-}
+  }
+  
