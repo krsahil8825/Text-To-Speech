@@ -1,63 +1,41 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const textInput = document.getElementById("text-input");
-    const languageSelect = document.getElementById("language-select");
-    const voiceSelect = document.getElementById("voice-select");
-    const speakBtn = document.getElementById("speak-btn");
-    const stopBtn = document.getElementById("stop-btn");
     const toggleBtn = document.getElementById("toggle-btn");
+    const stopBtn = document.getElementById("stop-btn");
 
-    let isExtensionOn = false;
-    let utterance = new SpeechSynthesisUtterance();
+    let isReading = false;
 
     toggleBtn.addEventListener("click", function () {
-        isExtensionOn = !isExtensionOn;
-        toggleBtn.textContent = isExtensionOn ? "Turn OFF" : "Turn ON";
-        speakBtn.disabled = !isExtensionOn;
-        stopBtn.disabled = !isExtensionOn;
-    });
+        isReading = !isReading;
+        toggleBtn.textContent = isReading ? "Turn OFF" : "Turn ON";
+        stopBtn.disabled = !isReading;
 
-    speakBtn.addEventListener("click", function () {
-        if (!isExtensionOn) return;
-
-        const text = textInput.value.trim();
-        if (text === "") return;
-
-        utterance.text = text;
-
-        let selectedLang = languageSelect.value;
-        if (selectedLang === "auto") {
-            selectedLang = detectLanguage(text);
-        }
-
-        const voices = speechSynthesis.getVoices();
-        let selectedVoice = voices.find(voice =>
-            (voiceSelect.value === "male" && voice.lang.includes(selectedLang) && voice.name.includes("Male")) ||
-            (voiceSelect.value === "female" && voice.lang.includes(selectedLang) && voice.name.includes("Female"))
-        );
-
-        utterance.voice = selectedVoice || voices[0];
-        speechSynthesis.speak(utterance);
+        chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+            chrome.scripting.executeScript({
+                target: { tabId: tabs[0].id },
+                function: toggleReading,
+                args: [isReading]
+            });
+        });
     });
 
     stopBtn.addEventListener("click", function () {
-        speechSynthesis.cancel();
+        chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+            chrome.scripting.executeScript({
+                target: { tabId: tabs[0].id },
+                function: stopReading
+            });
+        });
+
+        isReading = false;
+        toggleBtn.textContent = "Turn ON";
+        stopBtn.disabled = true;
     });
-
-    speechSynthesis.onvoiceschanged = () => {
-        console.log("Voices loaded");
-    };
-
-    function detectLanguage(text) {
-        const regex = {
-            "zh-CN": /[\u4e00-\u9fff]/,
-            "es-ES": /[ñáéíóúü]/,
-            "fr-FR": /[àâçéèêëîïôœùûüÿ]/,
-            "de-DE": /[äöüß]/,
-            "en-US": /[a-zA-Z]/,
-        };
-        for (let lang in regex) {
-            if (regex[lang].test(text)) return lang;
-        }
-        return "en-US"; // Default to English
-    }
 });
+
+function toggleReading(isReading) {
+    window.postMessage({ action: "toggleReading", isReading }, "*");
+}
+
+function stopReading() {
+    window.postMessage({ action: "stopReading" }, "*");
+}

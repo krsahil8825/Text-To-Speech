@@ -2,16 +2,28 @@
     "manifest_version": 3,
     "name": "Text to Speech",
     "version": "1.0.0",
-    "description": "A text-to-speech extension supporting multiple languages with male and female voices.",
+    "description": "Reads web pages aloud with an ON/OFF toggle and highlights spoken words.",
     "icons": {
-      "128": "icon.png"
+        "128": "icon.png"
     },
     "action": {
-      "default_popup": "popup.html"
+        "default_popup": "popup.html"
     },
-    "permissions": ["tts", "storage"],
-    "background": {
-      "service_worker": "background.js"
-    }
-  }
-  
+    "permissions": [
+        "activeTab",
+        "storage"
+    ],
+    "host_permissions": [
+        "<all_urls>"
+    ],
+    "content_scripts": [
+        {
+            "matches": [
+                "<all_urls>"
+            ],
+            "js": [
+                "content.js"
+            ]
+        }
+    ]
+}
