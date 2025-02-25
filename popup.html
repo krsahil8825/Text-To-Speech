@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text to Speech</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <h2>Text to Speech</h2>
+
+    <textarea id="text-input" placeholder="Enter text here..."></textarea>
+
+    <div class="controls">
+        <label for="language-select">Language:</label>
+        <select id="language-select">
+            <option value="auto">Auto-Detect</option>
+            <option value="en-US">English</option>
+            <option value="es-ES">Spanish</option>
+            <option value="fr-FR">French</option>
+            <option value="de-DE">German</option>
+            <option value="zh-CN">Chinese</option>
+        </select>
+    </div>
+
+    <div class="controls">
+        <label for="voice-select">Voice:</label>
+        <select id="voice-select">
+            <option value="female" selected>Female</option>
+            <option value="male">Male</option>
+        </select>
+    </div>
+
+    <button id="toggle-btn">Turn ON</button>
+    <button id="speak-btn" disabled>Speak</button>
+    <button id="stop-btn" disabled>Stop</button>
+
+    <script src="popup.js"></script>
+</body>
+
+</html>
